@@ -120,7 +120,7 @@ make & cd bin
 ### 服务启动
 
 ```
-./cdnprovider_auth auth.conf(替换成用户自己的服务配置文件)
+./cdnprovider_auth auth.conf(替换成用户的服务配置文件)
 ```
 
 ### 服务更新
