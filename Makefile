@@ -7,5 +7,7 @@ install:
 clean:
 	cd src; go clean -i ./...
 
+test:
+	cd src;  go test
 style:
 	@$(QCHECKSTYLE) src
