@@ -25,12 +25,7 @@ type handleRequestFunc interface {
 func (rh *RequestHandle) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log := filelog.NewReqLogger(w, r)
 
-	var remoteIP string
-	if strings.ContainsRune(r.RemoteAddr, ':') {
-		remoteIP, _, _ = net.SplitHostPort(r.RemoteAddr)
-	} else {
-		remoteIP = r.RemoteAddr
-	}
+	remoteIP := getRemoteIp(r)
 	log.Infof("==> ServeHTTP request from ip: %s", remoteIP)
 
 	var err error
@@ -64,11 +59,21 @@ func (rh *RequestHandle) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 校验客户端的 IP 是否在白名单内
-	if !util.InStringSlice(remoteIP, conf.ServerConf.IpWhiteList) {
+	whiteIpCount := len(conf.ServerConf.IpWhiteList)
+	if whiteIpCount > 0 && !util.InStringSlice(remoteIP, conf.ServerConf.IpWhiteList) {
 		err = errcode.ForbiddenRequestErr
 		return
 	}
 
 	resData, err = rh.HandleRequestFunc.HandleRequest(log, w, r)
+	return
+}
+
+func getRemoteIp(r *http.Request) (remoteIp string) {
+	if remoteIp = r.Header.Get("X-Forwarded-For"); remoteIp != "" {
+		remoteIp = strings.Split(remoteIp, ",")[0]
+	} else {
+		remoteIp, _, _ = net.SplitHostPort(r.RemoteAddr)
+	}
 	return
 }
