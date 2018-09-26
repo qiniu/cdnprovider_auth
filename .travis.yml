@@ -1,0 +1,12 @@
+language: go
+sudo: true
+go:
+  - 1.10.3
+before_script:
+  - go get ./...
+script:
+  - make test
+services:
+  - redis-server
+install:
+  - export GOPATH="${TRAVIS_HOME}/gopath/src/github.com/qiniu/cdnprovider_auth:$GOPATH"
