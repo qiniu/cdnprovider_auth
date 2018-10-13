@@ -1,11 +1,26 @@
 # CDNHub 统一授权服务使用说明 [![Build Status](https://api.travis-ci.org/qiniu/logkit.svg)](http://travis-ci.org/qiniu/cdnprovider_auth)
 
-## 简述
+## 服务简述
 
 CDNHub 统一授权服务是七牛 CDNHub 平台为用户提供的针对第三方 CDN 厂商的通用授权服务。基于第三方厂商提供的账号信息为 CdnHub 平台提供授权信息，允许用户在该平台上统一管理多厂商 CDN 资源，实现刷新预取，配置修改，用量统计等功能。现已支持的第三方 CDN 厂商：阿里云、百度云、白山云、帝联科技、快网、腾讯云、网宿、云帆加速、又拍云。
 
-## 服务配置
+## 服务部署
 
+### 源码下载编译
+```
+git clone https://github.com/qiniu/cdnprovider_auth
+cd cdnprovider_auth
+make & cd bin
+```
+
+### 二进制文件下载
+* [Mac](http://pebc2c9b2.bkt.clouddn.com/mac/cdnprovider_auth)
+* [Linux](http://pebc2c9b2.bkt.clouddn.com/linux/cdnprovider_auth)
+* [Windows](http://pebc2c9b2.bkt.clouddn.com/windows/cdnprovider_auth.exe)
+
+
+### 服务配置
+下载 cdnprovider_auth.conf 或自建配置文件, 配置其中将使用CDN厂商的授权信息。**请注意：** 配置文件不支持 "//" 注释,自建配置文件需删除注释。
 ```
 {
 	// 服务绑定地址
@@ -102,38 +117,24 @@ CDNHub 统一授权服务是七牛 CDNHub 平台为用户提供的针对第三�
 	},
 }
 ```
-
-## 服务部署
-
-### 源码部署
-```
-git clone https://github.com/qiniu/cdnprovider_auth
-cd cdnprovider_auth
-make & cd bin
-```
-
-### 二进制文件部署
-* [Mac](http://pebc2c9b2.bkt.clouddn.com/mac/cdnprovider_auth)
-* [Linux](http://pebc2c9b2.bkt.clouddn.com/linux/cdnprovider_auth)
-* [Windows](http://pebc2c9b2.bkt.clouddn.com/windows/cdnprovider_auth.exe)
-
 ### 服务启动
+使用二进制文件启动服务（指定配置文件路径）：
 
 ```
-./cdnprovider_auth auth.conf(替换成用户的服务配置文件)
+./cdnprovider_auth cdnprovider_auth.conf
 ```
 
-### 服务更新
-
-下载源码生成二进制包或直接下载二进制包，将已经在运行的 cdnprovider_auth 二进制包替换成新的二进制包，重启服务方式：
-
-1. Kill cdnprovider\_auth 服务进程并重新启动
-2. 热重启服务：kill -HUP cdnprovider\_auth 服务进程
-
-### 使用 cdnprovider_auth 的 docker 镜像启动
+使用 docker 镜像启动服务：
 ```
 docker pull reg.qiniu.com/cdnproviderauth/cdnprovider_auth:v1
 docker run -d  -p 8080:8080  -v /local/cdnprovider_auth.conf:/app/auth.conf reg.qiniu.com/cdnproviderauth/cdnprovider_auth:v1
 ```
 
 镜像中，cdnprovider\_auth 读取 /app/ 目录下的配置文件 auth.conf，需要把本地的配置文件挂载到镜像中去才能启动，比如本地的配置文件为 /local/cdnprovider_auth.conf，挂载到镜像中的 /app/auth.conf 文件。
+
+### 服务更新
+
+下载源码生成二进制文件或直接下载二进制文件，将已经在运行的 cdnprovider_auth 二进制文件替换成新的二进制文件，重启服务方式：
+
+1. kill cdnprovider\_auth 服务进程，并重新启动
+2. 热重启服务：kill -HUP cdnprovider\_auth 服务进程
